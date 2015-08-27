@@ -6,20 +6,22 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 # Initialize get and other tools.
 ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update && apt-get -y upgrade
+RUN apt-get update -qq && apt-get -y upgrade
 RUN apt-get -y -f install python-software-properties \
                           software-properties-common \
                           build-essential \
                           apt-utils \
                           openssh-client \
-                          git
+                          git \
+                          wget
 
-# Install everything ROS and project related.
-RUN add-apt-repository -y ppa:swi-prolog/stable && apt-get update
+# Install everything ROS and project related (bullet, prolog, gazebo)
+RUN add-apt-repository -y ppa:swi-prolog/stable && apt-get update -qq
 RUN apt-get -y -f install libjson-glib-dev \
                           libbullet-dev \
                           swi-prolog \
-                          swi-prolog-java
+                          swi-prolog-java \
+                          gazebo2
 RUN apt-get -y -f install ros-indigo-rosjava \
                           ros-indigo-rosjava-messages \
                           ros-indigo-navigation \
@@ -35,8 +37,12 @@ RUN apt-get -y -f install ros-indigo-rosjava \
                           ros-indigo-pr2-common \
                           ros-indigo-pr2-controllers \
                           ros-indigo-pr2-mechanism \
-                          ros-indigo-pr2-mechanism-msgs
-
+                          ros-indigo-pr2-mechanism-msgs \
+                          ros-indigo-pr2-simulator \
+                          ros-indigo-image-common \
+                          ros-indigo-driver-common \
+                          ros-indigo-gazebo-ros-pkgs \
+                          ros-indigo-gazebo-ros-control
 
 # Create User.
 RUN useradd shopper -m
@@ -46,6 +52,7 @@ RUN chown -R shopper:shopper /opt/ros/indigo/share
 
 # Create raw workspace.
 ADD scripts/run.bash /home/shopper/run.bash
+ADD scripts/entry.bash /home/shopper/entry.bash
 ADD tmp/src /home/shopper/catkin_ws/src
 WORKDIR /home/shopper/catkin_ws
 RUN chown -R shopper:shopper /home/shopper
@@ -67,5 +74,5 @@ RUN source ./devel/setup.bash && \
     catkin_make
 
 # Set image entrypoint and default command.
-CMD ["roslaunch shopping_scenario_executive shopping_scenario.launch"]
-ENTRYPOINT ["/home/shopper/run.bash"]
+CMD ["/home/shopper/run.bash"]
+ENTRYPOINT ["/home/shopper/entry.bash"]

@@ -21,6 +21,7 @@ git clone https://github.com/code-iai/iai_common_msgs.git $dir/iai_common_msgs
 git clone https://github.com/code-iai/designator_integration_lisp.git $dir/designator_integration_lisp
 git clone https://github.com/code-iai/iai_cad_tools.git $dir/iai_cad_tools
 git clone https://github.com/code-iai/robot_state_chain_publisher.git $dir/robot_state_chain_publisher
+git clone https://github.com/code-iai/nav_pcontroller.git $dir/nav_pcontroller
 git clone https://github.com/ros/roslisp_common.git $dir/roslisp_common
 
 ##########

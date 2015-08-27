@@ -1,6 +1,3 @@
 #!/bin/bash
-source ~/.bashrc
-source /opt/ros/indigo/setup.bash
-source ~/catkin_ws/devel/setup.bash
-export PATH=$PATH:/opt/ros/indigo/bin
-bash -c "$@"
+bash -c "roslaunch shopping_scenario_executive shopping_scenario.launch&"
+bash -c "roslaunch shopping_scenario_executive shopping_scenario_simulation.launch"

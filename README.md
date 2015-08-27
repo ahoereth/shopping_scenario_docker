@@ -13,13 +13,14 @@ $ ./build.sh
 ```
 
 ## Run the image
-The build script create a Docker image named `shopping_scenario` - run it.
+The build script creates a Docker image named `shopping_scenario` - run it.
 
 ```shell
 $ docker run shopping_scenario
 ```
 
-The default command executed when running the image:
+The default commands executed when running the image:
 ```
-$ roslaunch shopping_scenario_executive shopping_scenario.launch
+$ roslaunch shopping_scenario_executive shopping_scenario.launch&
+$ roslaunch shopping_scenario_executive shopping_scenario_simulation.launch
 ```
