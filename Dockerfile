@@ -16,7 +16,10 @@ RUN apt-get -y -f install python-software-properties \
                           wget
 
 # Install everything ROS and project related (bullet, prolog, gazebo)
-RUN add-apt-repository -y ppa:swi-prolog/stable && apt-get update -qq
+RUN add-apt-repository -y ppa:swi-prolog/stable && \
+    add-apt-repository "deb http://packages.osrfoundation.org/gazebo/ubuntu trusty main" && \
+    wget http://packages.osrfoundation.org/gazebo.key -O gazebo.key && \
+    apt-key add gazebo.key && apt-get update -qq
 RUN apt-get -y -f install libjson-glib-dev \
                           libbullet-dev \
                           swi-prolog \
@@ -25,7 +28,7 @@ RUN apt-get -y -f install libjson-glib-dev \
 RUN apt-get -y -f install ros-indigo-rosjava \
                           ros-indigo-rosjava-messages \
                           ros-indigo-navigation \
-                          ros-indigo-moveit-full \
+                          ros-indigo-moveit-full-pr2 \
                           ros-indigo-robot-mechanism-controllers \
                           ros-indigo-ivcon ros-indigo-mjpeg-server \
                           ros-indigo-cram-3rdparty \
@@ -43,6 +46,7 @@ RUN apt-get -y -f install ros-indigo-rosjava \
                           ros-indigo-driver-common \
                           ros-indigo-gazebo-ros-pkgs \
                           ros-indigo-gazebo-ros-control
+RUN rosdep update
 
 # Create User.
 RUN useradd shopper -m
@@ -51,8 +55,6 @@ RUN mkdir -p /home/shopper
 RUN chown -R shopper:shopper /opt/ros/indigo/share
 
 # Create raw workspace.
-ADD scripts/run.bash /home/shopper/run.bash
-ADD scripts/entry.bash /home/shopper/entry.bash
 ADD tmp/src /home/shopper/catkin_ws/src
 WORKDIR /home/shopper/catkin_ws
 RUN chown -R shopper:shopper /home/shopper
@@ -73,6 +75,15 @@ USER shopper
 RUN source ./devel/setup.bash && \
     catkin_make
 
-# Set image entrypoint and default command.
+# Entry and build scripts.
+USER root
+ADD scripts/run.bash /home/shopper/run.bash
+ADD scripts/entry.bash /home/shopper/entry.bash
+RUN chown -R shopper:shopper /home/shopper
+USER shopper
+
+# Entrypoint and default command.
+EXPOSE 11345
+ENV QT_X11_NO_MITSHM 1
 CMD ["/home/shopper/run.bash"]
 ENTRYPOINT ["/home/shopper/entry.bash"]
