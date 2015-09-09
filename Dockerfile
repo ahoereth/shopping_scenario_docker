@@ -4,9 +4,13 @@ MAINTAINER Alexander Höreth "a.hoereth@gmail.com"
 # Use bash.
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
+# Required workaround for https://github.com/docker/docker/issues/1724 if
+# using `apt-get upgrade` or `apt-get dist-upgrade`
+#RUN dpkg-divert --local --rename /usr/bin/ischroot && ln -sf /bin/true /usr/bin/ischroot
+
 # Initialize get and other tools.
 ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update -qq && apt-get -y upgrade
+RUN apt-get update -qq
 RUN apt-get -y -f install python-software-properties \
                           software-properties-common \
                           build-essential \
@@ -46,7 +50,6 @@ RUN apt-get -y -f install ros-indigo-rosjava \
                           ros-indigo-driver-common \
                           ros-indigo-gazebo-ros-pkgs \
                           ros-indigo-gazebo-ros-control
-RUN rosdep update
 
 # Create User.
 RUN useradd shopper -m
@@ -61,6 +64,7 @@ RUN chown -R shopper:shopper /home/shopper
 
 # Change to user.
 USER shopper
+RUN rosdep update
 
 # Initialize workspace and build project WITHOUT shopping_scenario.
 RUN source /opt/ros/indigo/setup.bash && \
@@ -69,7 +73,7 @@ RUN source /opt/ros/indigo/setup.bash && \
 
 # Add shopping_scenario and build again.
 USER root
-ADD tmp/shopping_scenario ./src/shopping_scenario
+ADD tmp/shopping_scenario /home/shopper/catkin_ws/src/shopping_scenario
 RUN chown -R shopper:shopper /home/shopper
 USER shopper
 RUN source ./devel/setup.bash && \
