@@ -1,3 +1,4 @@
+mkdir -p logs
 
 dir=tmp
 mkdir -p $dir
