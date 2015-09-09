@@ -55,13 +55,15 @@ RUN apt-get -y -f install ros-indigo-rosjava \
 # Create User.
 RUN useradd shopper -m
 RUN echo "shopper:shopping" | chpasswd
-RUN mkdir -p /home/shopper
+ENV HOME /home/shopper
+ENV WORKSPACE $HOME/catkin_ws
+RUN mkdir -p $HOME $HOME/logs
 RUN chown -R shopper:shopper /opt/ros/indigo/share
 
-# Create raw workspace.
-ADD tmp/src /home/shopper/catkin_ws/src
-WORKDIR /home/shopper/catkin_ws
-RUN chown -R shopper:shopper /home/shopper
+# Create raw workspace and get entrypoint script.
+ADD scripts/entry.bash $HOME/entry.bash
+ADD tmp/src $HOME/catkin_ws/src
+RUN chown -R shopper:shopper $HOME
 
 # Change to user.
 USER shopper
@@ -69,26 +71,23 @@ RUN rosdep update
 
 # Initialize workspace and build project WITHOUT shopping_scenario.
 RUN source /opt/ros/indigo/setup.bash && \
-    catkin_init_workspace src && \
-    catkin_make
+    catkin_init_workspace $WORKSPACE/src && \
+    catkin_make -C $WORKSPACE
 
 # Add shopping_scenario and build again.
 USER root
-ADD tmp/shopping_scenario /home/shopper/catkin_ws/src/shopping_scenario
-RUN chown -R shopper:shopper /home/shopper
+ADD tmp/shopping_scenario $WORKSPACE/src/shopping_scenario
+RUN chown -R shopper:shopper $HOME
 USER shopper
-RUN source ./devel/setup.bash && \
-    catkin_make
+RUN source $WORKSPACE/devel/setup.bash && \
+    catkin_make -C $WORKSPACE
+RUN echo "source $WORKSPACE/devel/setup.bash" >> $HOME/.bashrc
 
-# Entry and build scripts.
-USER root
-ADD scripts/run.bash /home/shopper/run.bash
-ADD scripts/entry.bash /home/shopper/entry.bash
-RUN chown -R shopper:shopper /home/shopper
-USER shopper
-
-# Entrypoint and default command.
+# GUI
 EXPOSE 11345
 ENV QT_X11_NO_MITSHM 1
-CMD ["/home/shopper/run.bash"]
+
+# Entrypoint and default command.
+WORKDIR $WORKSPACE
 ENTRYPOINT ["/home/shopper/entry.bash"]
+CMD ["roslaunch", "shopping_scenario_executive", "start.launch"]

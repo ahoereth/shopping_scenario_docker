@@ -1,8 +1,9 @@
 #!/bin/bash
-source ~/.bashrc
-source /opt/ros/indigo/setup.bash
-source ~/catkin_ws/devel/setup.bash
-mkdir -p ~/logs/
+set -e
+
+source "/home/shopper/.bashrc"
+source "/opt/ros/$ROS_DISTRO/setup.bash"
+source "/home/shopper/catkin_ws/devel/setup.bash"
 export ROS_LOG_DIR=~/logs/
-export PATH=$PATH:/opt/ros/indigo/bin
-bash -c "$@"
+
+exec "$@"
