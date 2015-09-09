@@ -49,7 +49,8 @@ RUN apt-get -y -f install ros-indigo-rosjava \
                           ros-indigo-image-common \
                           ros-indigo-driver-common \
                           ros-indigo-gazebo-ros-pkgs \
-                          ros-indigo-gazebo-ros-control
+                          ros-indigo-gazebo-ros-control \
+                          ros-indigo-common-msgs
 
 # Create User.
 RUN useradd shopper -m

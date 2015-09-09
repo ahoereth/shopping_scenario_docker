@@ -32,10 +32,12 @@ git clone https://github.com/cram-code/cram_pr2.git $dir/cram_pr2
 git clone https://github.com/cram-code/cram_highlevel $dir/cram_highlevel
 git clone https://github.com/cram-code/cram_physics $dir/cram_physics
 git clone https://github.com/cram-code/cram_bridge.git $dir/cram_bridge
+git clone https://github.com/cram-code/cram_gazebo $dir/cram_gazebo
+git clone https://github.com/fairlight1337/cram_prediction.git $dir/cram_prediction
 
 ##########
 ## Build
-sudo docker build -t shopping_scenario .
+docker build -t shopping_scenario .
 
 ##########
 ## Cleanup
