@@ -4,4 +4,4 @@ docker run \
   -v $HOME/.Xauthority:/home/developer/.Xauthority:ro \
   -v `pwd`/logs:/home/shopper/logs:rw \
   --net=host \
-  shopping_scenario
+  shopping_scenario $@
