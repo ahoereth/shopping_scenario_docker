@@ -27,13 +27,14 @@ git clone https://github.com/ros/roslisp_common.git $dir/roslisp_common
 
 ##########
 ## Cram
-git clone https://github.com/cram-code/cram_core.git $dir/cram_core
+git clone https://github.com/fairlight1337/cram_core.git $dir/cram_core
+#git clone https://github.com/fairlight1337/cram_pr2.git $dir/cram_pr2 # behind master
 git clone https://github.com/cram-code/cram_pr2.git $dir/cram_pr2
-git clone https://github.com/cram-code/cram_highlevel $dir/cram_highlevel
-git clone https://github.com/cram-code/cram_physics $dir/cram_physics
-git clone https://github.com/cram-code/cram_bridge.git $dir/cram_bridge
-git clone https://github.com/cram-code/cram_gazebo $dir/cram_gazebo
+git clone https://github.com/fairlight1337/cram_highlevel $dir/cram_highlevel
+git clone https://github.com/fairlight1337/cram_physics $dir/cram_physics
+git clone https://github.com/fairlight1337/cram_bridge.git $dir/cram_bridge
 git clone https://github.com/fairlight1337/cram_prediction.git $dir/cram_prediction
+git clone https://github.com/cram-code/cram_gazebo $dir/cram_gazebo
 
 ##########
 ## Build

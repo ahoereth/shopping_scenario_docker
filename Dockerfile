@@ -50,7 +50,8 @@ RUN apt-get -y -f install ros-indigo-rosjava \
                           ros-indigo-driver-common \
                           ros-indigo-gazebo-ros-pkgs \
                           ros-indigo-gazebo-ros-control \
-                          ros-indigo-common-msgs
+                          ros-indigo-common-msgs \
+                          ros-indigo-actionlib-tutorials
 
 # Create User.
 RUN useradd shopper -m
@@ -81,6 +82,7 @@ RUN chown -R shopper:shopper $HOME
 USER shopper
 RUN source $WORKSPACE/devel/setup.bash && \
     catkin_make -C $WORKSPACE
+RUN echo "source /opt/ros/indigo/setup.bash" >> $HOME/.bashrc
 RUN echo "source $WORKSPACE/devel/setup.bash" >> $HOME/.bashrc
 
 # GUI
